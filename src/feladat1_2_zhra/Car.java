@@ -14,38 +14,47 @@ public class Car implements Runnable {
 	@Override
 	public void run() {
 		
-		System.out.println(this.id + " " + this.rendszam + " rendszamu auto elindult a keresztezodes fele.");
 
 		try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		System.out.println(this.id +" " + this.rendszam + " rendszamu auto megerkezett a keresztezodeshez.");
-		
+		System.out.println(this.id + " keresztezodes elott.");
+						
 		synchronized (this.keresztezodes) {
-			try {
-				while (this.keresztezodes.isLampaZold == false) {
-					this.keresztezodes.wait();
-					System.out.println("felebredt");
+			
+			if (this.keresztezodes.isLampaZold == false) {
+				synchronized (this.keresztezodes.lampaLock) {
+					while (this.keresztezodes.isLampaZold == false) {
+						try {
+							System.out.println(this.id + " var a pirosnal");		
+							this.keresztezodes.lampaLock.wait();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						System.out.println(this.id + " felebredt");
+					}
 				}
-				System.out.println(this.id + " valaki bejott a keresztezodesbe");
-
+			}
+			
+			
+			System.out.println(this.id + " bement");		
+			try {
 				Thread.sleep(2000);
-
-				System.out.println("vegigment");
+				
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
+		System.out.println(this.id + " kijott a keresztezodesbol");
 		
-		System.out.println(this.id +" " + this.rendszam + " rendszamu auto kijott a keresztezodesbol.");
 		try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		System.out.println(this.id +" " + this.rendszam + " rendszamu auto elkoszon.");
+//		System.out.println(this.id +" " + this.rendszam + " rendszamu auto elkoszon.");
 		
 	}
 

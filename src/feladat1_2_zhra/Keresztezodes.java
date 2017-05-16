@@ -1,46 +1,29 @@
 package feladat1_2_zhra;
 
 public class Keresztezodes implements Runnable {
-	public volatile Boolean isLampaZold = false;
-	
-	public synchronized void belep() {
-		
-		try {
-			while (this.isLampaZold == false) {
-				this.wait();
-				System.out.println("felebredt");
-			}
-			System.out.println("valaki bejott a keresztezodesbe");
+	public volatile boolean isLampaZold = false;
+	public Object lampaLock = new Object();
 
-			Thread.sleep(2000);
-
-			System.out.println("vegigment");
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-			
-	}
-		
-	
-	
 	public void run() {
+		System.out.println("piros a lampa");
 		while (true) {
-			this.isLampaZold = !this.isLampaZold;
-			if (isLampaZold == false) { //piros
-				System.out.println("piros a lampa");
-				continue;
-			}
-			System.out.println("zold a lampa");
-			
-			synchronized (this) {
-				System.out.println("zold lampa notify");
-				this.notifyAll();
-			}
 			try {
-				Thread.sleep(4000);
+				Thread.sleep(8000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			
+			this.isLampaZold = !this.isLampaZold;
+			if (this.isLampaZold) {
+				System.out.println("zold a lampa");
+				synchronized (this.lampaLock) {
+					System.out.println("zold lampa notify");
+					this.lampaLock.notifyAll();
+				}
+			} else {
+				System.out.println("piros a lampa");
+			}
+			
 		}
 	}
 }

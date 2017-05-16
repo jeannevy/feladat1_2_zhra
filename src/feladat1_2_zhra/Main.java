@@ -11,7 +11,7 @@ public class Main {
 		Keresztezodes keri = new Keresztezodes();
 		Thread t = new Thread(keri);
 		t.start();
-		for (int i=0; i<100; i++) {
+		for (int i=0; i<150; i++) {
 			Random random = new Random();
 			Car car = new Car(i, random.nextInt(900000)+100000, keri);
 			Thread thread = new Thread(car);
